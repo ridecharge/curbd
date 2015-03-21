@@ -1,0 +1,2 @@
+python-consul>=0.3.3
+boto>=2.36

@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+import argparse
+import curbd
+
+
+def get_curbd(options):
+    return curbd.new_curbd(options)
+
+
+def from_json(options):
+    get_curbd(options).from_json()
+
+
+def from_cf(options):
+    get_curbd(options).from_cf()
+
+
+def register_subparsers(parser):
+    subparsers = parser.add_subparsers(title='subcommands', description='stack subcommands',
+                                       help='subcommands')
+    subparsers.required = True
+    subparsers.dest = 'subcommand'
+    register_subparser(subparsers, 'from_json', from_json).add_argument('program',
+                                                                      help='The program type.',
+                                                                      choices=['nginx'])
+    register_subparser(subparsers, 'from_cf', from_cf)
+
+
+def register_subparser(subparsers, name, func):
+    parser = subparsers.add_parser(name)
+    parser.add_argument('-H', '--host', help='The consul host.')
+    parser.add_argument('-p', '--port', help='The consul port.')
+    parser.add_argument('-e', '--environment',
+                        help='The environment name.',
+                        default='test')
+    parser.add_argument('-r', '--region', help='The AWS region to deploy this stack into.',
+                        choices=['us-east-1', 'us-west-1'], default='us-east-1')
+    parser.add_argument('service', help='The service name.')
+    parser.set_defaults(func=func)
+    return parser
+
+
+def get_parser():
+    parser = argparse.ArgumentParser(
+        description='Performs operations for Curbd.',
+        prog="curbd")
+    return parser
+
+
+def args_error(message, parser):
+    parser.print_help()
+    print(message)
+    exit(1)
+
+
+def main():
+    parser = get_parser()
+    register_subparsers(parser)
+    args = parser.parse_args()
+
+    args.func(args)
+
+
+if __name__ == '__main__':
+    main()

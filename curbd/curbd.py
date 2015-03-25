@@ -30,7 +30,7 @@ class Curbd(object):
 
     def from_cf(self):
         key_prefix = "cf/" + self.service + "/"
-        if self.options.local:
+        if self.env == 'mock':
             path = "../curbd/mock-cf/" + self.service + ".json"
             self.__from_json(path, key_prefix)
         else:

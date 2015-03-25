@@ -22,9 +22,7 @@ def register_subparsers(parser):
     subparsers.dest = 'subcommand'
     register_subparser(subparsers, 'from_json', from_json).add_argument('program',
                                                                       help='The program type.')
-    cf_parser = register_subparser(subparsers, 'from_cf', from_cf)
-    cf_parser.add_argument('-l', '--local', dest='local', action='store_true')
-    cf_parser.set_defaults(local=False)
+    register_subparser(subparsers, 'from_cf', from_cf)
 
 
 def register_subparser(subparsers, name, func):
@@ -33,7 +31,7 @@ def register_subparser(subparsers, name, func):
     parser.add_argument('-p', '--port', help='The consul port.')
     parser.add_argument('-e', '--environment',
                         help='The environment name.',
-                        default='test')
+                        default='mock')
     parser.add_argument('-r', '--region', help='The AWS Region to describe stacks from.',
                         choices=['us-east-1', 'us-west-1'], default='us-east-1')
     parser.add_argument('service', help='The service name.')

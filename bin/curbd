@@ -21,9 +21,10 @@ def register_subparsers(parser):
     subparsers.required = True
     subparsers.dest = 'subcommand'
     register_subparser(subparsers, 'from_json', from_json).add_argument('program',
-                                                                      help='The program type.',
-                                                                      choices=['nginx'])
-    register_subparser(subparsers, 'from_cf', from_cf)
+                                                                      help='The program type.')
+    cf_parser = register_subparser(subparsers, 'from_cf', from_cf)
+    cf_parser.add_argument('-l', '--local', dest='local', action='store_true')
+    cf_parser.set_defaults(local=False)
 
 
 def register_subparser(subparsers, name, func):
@@ -33,7 +34,7 @@ def register_subparser(subparsers, name, func):
     parser.add_argument('-e', '--environment',
                         help='The environment name.',
                         default='test')
-    parser.add_argument('-r', '--region', help='The AWS region to deploy this stack into.',
+    parser.add_argument('-r', '--region', help='The AWS Region to describe stacks from.',
                         choices=['us-east-1', 'us-west-1'], default='us-east-1')
     parser.add_argument('service', help='The service name.')
     parser.set_defaults(func=func)
@@ -43,7 +44,7 @@ def register_subparser(subparsers, name, func):
 def get_parser():
     parser = argparse.ArgumentParser(
         description='Performs operations for Curbd.',
-        prog="curbd")
+        prog='curbd')
     return parser
 
 

@@ -6,8 +6,8 @@ class Curbd(object):
     def __init__(self, cf_conn, consul_conn, options):
         self.cf_conn = cf_conn
         self.consul_conn = consul_conn
-        self.env = options.environment
         self.service = options.service
+        self.env = options.environment
         self.options = options
 
     def from_json(self):
@@ -29,6 +29,7 @@ class Curbd(object):
             self.consul_conn.kv.put(key_prefix + key, o.value)
 
     def from_cf(self):
+        self.env = self.options.environment
         key_prefix = "cf/" + self.service + "/"
         if self.env == 'mock':
             path = "../curbd/mock-cf/" + self.service + ".json"

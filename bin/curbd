@@ -3,16 +3,8 @@ import argparse
 import curbd
 
 
-def get_curbd(options):
-    return curbd.new_curbd(options)
-
-
-def from_json(options):
-    get_curbd(options).from_json()
-
-
-def from_cf(options):
-    get_curbd(options).from_cf()
+def populate(options):
+    curbd.new_curbd(options).populate()
 
 
 def register_subparsers(parser):
@@ -25,16 +17,21 @@ def register_subparsers(parser):
 
 
 def register_from_json(subparsers):
-    parser = register_subparser(subparsers, 'from_json', from_json)
+    parser = register_subparser(subparsers, 'from_json', populate)
     parser.add_argument('program',
                       help='The program type.',
                       choices=['nginx'])
-    parser.add_argument('service', help='The service name.')
+    parser.add_argument('service_name', help='The service name.')
 
 
 def register_from_cf(subparsers):
-    parser = register_subparser(subparsers, 'from_cf', from_cf)
-    parser.add_argument('service', help='The service name.')
+    parser = register_subparser(subparsers, 'from_cf', populate)
+    parser.add_argument('-e', '--environment',
+                            help='The environment name.',
+                            default='mock')
+    parser.add_argument('-r', '--region', help='The AWS Region to describe stacks from.',
+                        choices=['us-east-1', 'us-west-1'], default='us-east-1')
+    parser.add_argument('service_name', help='The service name.')
 
 
 
@@ -42,11 +39,6 @@ def register_subparser(subparsers, name, func):
     parser = subparsers.add_parser(name)
     parser.add_argument('-H', '--host', help='The consul host.')
     parser.add_argument('-p', '--port', help='The consul port.')
-    parser.add_argument('-r', '--region', help='The AWS Region to describe stacks from.',
-                        choices=['us-east-1', 'us-west-1'], default='us-east-1')
-    parser.add_argument('-e', '--environment',
-                        help='The environment name.',
-                        default='mock')
     parser.set_defaults(func=func)
     return parser
 

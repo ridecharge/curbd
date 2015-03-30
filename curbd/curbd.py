@@ -2,40 +2,45 @@ import json
 import re
 
 
-class Curbd(object):
+class CurbdJson(object):
+    def __init__(self, consul_conn, options):
+        self.consul_conn = consul_conn
+        self.service_name = options.service_name
+        self.program = options.program
+        self.key_prefix = self.program + "/" + self.service_name + "/"
+        self.path = "../curbd/" + self.program + "/" + self.service_name + ".json"
+
+    def populate(self):
+        populate_json(self.consul_conn, self.path, self.key_prefix)
+
+
+class CurbdCf(object):
     def __init__(self, cf_conn, consul_conn, options):
         self.cf_conn = cf_conn
         self.consul_conn = consul_conn
-        self.service = options.service
+        self.service_name = options.service_name
         self.env = options.environment
-        self.options = options
+        self.key_prefix = "cf/" + self.service_name + "/"
 
-    def from_json(self):
-        program = self.options.program
-        key_prefix = program + "/" + self.service + "/"
-        path = "../curbd/" + program + "/" + self.service + ".json"
-        self.__from_json(path, key_prefix)
-
-    def __from_json(self, path, key_prefix):
-        with open(path) as f:
-            for k, v in json.load(f).items():
-                print(key_prefix + k, v)
-                self.consul_conn.kv.put(key_prefix + k, v)
-
-    def __from_cf(self, key_prefix):
-        for o in self.cf_conn.describe_stacks(self.env + "-" + self.service)[0].outputs:
+    def __populate(self,):
+        for o in self.cf_conn.describe_stacks(self.env + "-" + self.service_name)[0].outputs:
             key = convert(o.key)
-            print(key_prefix + key, o.value)
-            self.consul_conn.kv.put(key_prefix + key, o.value)
+            print(self.key_prefix + key, o.value)
+            self.consul_conn.kv.put(self.key_prefix + key, o.value)
 
-    def from_cf(self):
-        self.env = self.options.environment
-        key_prefix = "cf/" + self.service + "/"
+    def populate(self):
         if self.env == 'mock':
-            path = "../curbd/mock-cf/" + self.service + ".json"
-            self.__from_json(path, key_prefix)
+            path = "../curbd/mock-cf/" + self.service_name + ".json"
+            populate_json(self.consul_conn, path, self.key_prefix)
         else:
-            self.__from_cf(key_prefix)
+            self.__populate()
+
+
+def populate_json(consul_conn, path, key_prefix):
+    with open(path) as f:
+        for k, v in json.load(f).items():
+            print(key_prefix + k, v)
+            consul_conn.kv.put(key_prefix + k, v)
 
 
 def convert(key):

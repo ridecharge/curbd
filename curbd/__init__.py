@@ -1,9 +1,14 @@
-from curbd.curbd import Curbd
-import consul
+from curbd.curbd import CurbdJson
+from curbd.curbd import CurbdCf
 from boto import cloudformation
+import consul
 
 
 def new_curbd(options):
-    cf_conn = cloudformation.connect_to_region(options.region)
     consul_conn = consul.Consul(options.host, options.port)
-    return Curbd(cf_conn, consul_conn, options)
+    if options.subcommand == 'from_json':
+        return CurbdJson(consul_conn, options)
+    if options.subcommand == 'from_cf':
+        cf_conn = cloudformation.connect_to_region(options.region)
+        return CurbdCf(cf_conn, consul_conn, options)
+    raise BaseException('No valid Curbd impl for the subcommand')

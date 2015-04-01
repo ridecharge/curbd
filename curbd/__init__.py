@@ -9,6 +9,8 @@ def new_curbd(options):
     if options.subcommand == 'from_json':
         return CurbdJson(consul_conn, options)
     if options.subcommand == 'from_cf':
-        cf_conn = cloudformation.connect_to_region(options.region)
+        cf_conn = None
+        if options.environment != 'mock':
+            cf_conn = cloudformation.connect_to_region(options.region)
         return CurbdCf(cf_conn, consul_conn, options)
     raise BaseException('No valid Curbd impl for the subcommand')

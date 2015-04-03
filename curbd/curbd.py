@@ -39,6 +39,8 @@ class CurbdCf(object):
 def populate_json(consul_conn, path, key_prefix):
     with open(path) as f:
         for k, v in json.load(f).items():
+            if isinstance(v, list):
+                v = "\n".join(v)
             print(key_prefix + k, v)
             consul_conn.kv.put(key_prefix + k, v)
 

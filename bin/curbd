@@ -20,7 +20,7 @@ def register_from_json(subparsers):
     parser = register_subparser(subparsers, 'from_json', populate)
     parser.add_argument('program',
                       help='The program type.',
-                      choices=['nginx'])
+                      choices=['nginx', 'userdata'])
     parser.add_argument('service_name', help='The service name.')
 
 

@@ -1,0 +1,13 @@
+{
+  "script": [
+    "#!/bin/sh",
+    "/root/startup.sh",
+    "docker run -d --restart=always --name consul \\",
+    "-p 8300:8300/tcp -p 8500:8500/tcp \\",
+    "-p 8301:8301/udp -p 8301:8301/tcp \\",
+    "ridecharge/consul:latest",
+    "docker run -e LOGGLY_TOKEN=$LOGGLY_TOKEN \\",
+    "ridecharge/aws-startup-utils ./attach_eni.py && \\",
+    "/root/config_network_interface.sh eth1"
+  ]
+}

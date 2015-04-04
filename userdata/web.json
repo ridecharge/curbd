@@ -13,7 +13,6 @@
     "ridecharge/$SERVICE_NAME:$VERSION",
     "docker run -d --name nginx -e SERVICE_NAME=$SERVICE_NAME \\",
     "--link $SERVICE_NAME:app --link logging:logging -p 8080:8080 \\",
-    "ridecharge/nginx"
+    "--link consul:consul ridecharge/nginx"
   ]
 }
-

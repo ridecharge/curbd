@@ -1,0 +1,21 @@
+{
+  "script": [
+    "#!/bin/sh",
+    "/root/startup.sh",
+    "docker run -d --name $SERVICE_NAME \\",
+    "-e SETTINGS_FLAVOR=s3 \\",
+    "-e STORAGE_PATH=/registry \\",
+    "-e AWS_BUCKET=global-$SERVICE_NAME-private \\",
+    "-e AWS_KEY=$AWS_KEY \\",
+    "-e AWS_SECRET=$AWS_SECRET \\",
+    "-e SEARCH_BACKEND=sqlalchemy \\",
+    "$SERVICE_NAME:$VERSION",
+    "docker run -d --name nginx \\",
+    "-e SERVICE_NAME=$SERVICE_NAME \\",
+    "--link $SERVICE_NAME:app \\",
+    "--link logging:logging \\",
+    "-p 8080:8080 \\",
+    "--link consul:consul \\",
+    "ridecharge/nginx:latest"
+  ]
+}

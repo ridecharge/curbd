@@ -5,7 +5,7 @@
     "docker run -d --restart=always --name consul \\",
     "-p 8300:8300/tcp -p 8500:8500/tcp \\",
     "-p 8301:8301/udp -p 8301:8301/tcp \\",
-    "ridecharge/consul:latest",
+    "$DOCKER_REPO/consul:latest",
     "docker run -d --name $SERVICE_NAME \\",
     "-e SETTINGS_FLAVOR=s3 \\",
     "-e STORAGE_PATH=/registry \\",
@@ -20,6 +20,6 @@
     "--link logging:logging \\",
     "-p 8080:8080 \\",
     "--link consul:consul \\",
-    "ridecharge/nginx:latest"
+    "$DOCKER_REPO/nginx:latest"
   ]
 }

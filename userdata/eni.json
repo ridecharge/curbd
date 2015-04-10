@@ -5,9 +5,10 @@
     "docker run -d --restart=always --name consul \\",
     "-p 8300:8300/tcp -p 8500:8500/tcp \\",
     "-p 8301:8301/udp -p 8301:8301/tcp \\",
-    "ridecharge/consul:latest",
+    "$DOCKER_REPO/consul:latest",
     "docker run -e LOGGLY_TOKEN=$LOGGLY_TOKEN \\",
-    "ridecharge/aws-startup-utils ./attach_eni.py && \\",
+    "$DOCKER_REPO/aws-startup-utils ./attach_eni.py && \\",
+    "sleep 10",
     "/root/config_network_interface.sh eth1"
   ]
 }

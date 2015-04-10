@@ -5,14 +5,14 @@
     "docker run -d --restart=always --name consul \\",
     "-p 8300:8300/tcp -p 8500:8500/tcp \\",
     "-p 8301:8301/udp -p 8301:8301/tcp \\",
-    "ridecharge/consul:latest",
+    "$DOCKER_REPO/consul:latest",
 	"docker run -d --restart=always --name statsd \\",
-	"ridecharge/statsd:latest",
+	"$DOCKER_REPO/statsd:latest",
     "docker run -d --name $SERVICE_NAME \\",
     "--link consul:consul --link statsd:statsd \\",
-    "ridecharge/$SERVICE_NAME:$VERSION",
+    "$DOCKER_REPO/$SERVICE_NAME:$VERSION",
     "docker run -d --name nginx -e SERVICE_NAME=$SERVICE_NAME \\",
     "--link $SERVICE_NAME:app --link logging:logging -p 8080:8080 \\",
-    "--link consul:consul ridecharge/nginx"
+    "--link consul:consul $DOCKER_REPO/nginx"
   ]
 }

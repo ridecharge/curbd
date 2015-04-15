@@ -1,6 +1,0 @@
-{
-  "version": "1.2.3",
-  "application_name": "cfversions",
-  "private_end_point": "localhost:8080",
-  "public_end_point": "localhost:8080"
-}

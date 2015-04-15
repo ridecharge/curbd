@@ -8,10 +8,15 @@ class CurbdJson(object):
         self.service_name = options.service_name
         self.program = options.program
         self.key_prefix = self.program + "/" + self.service_name + "/"
-        self.path = "../curbd/" + self.program + "/" + self.service_name + ".json"
+        self.path = "../curbd-config/" + self.program + "/" + self.service_name + ".json"
+        self.path_private = "../curbd-config-private/" + self.program + "/" + self.service_name \
+                            + ".json"
 
     def populate(self):
-        populate_json(self.consul_conn, self.path, self.key_prefix)
+        try:
+            populate_json(self.consul_conn, self.path, self.key_prefix)
+        except FileNotFoundError:
+            populate_json(self.consul_conn, self.path_private, self.key_prefix)
 
 
 class CurbdCf(object):
@@ -22,7 +27,7 @@ class CurbdCf(object):
         self.env = options.environment
         self.key_prefix = "cf/" + self.service_name + "/"
 
-    def __populate(self,):
+    def __populate(self, ):
         for o in self.cf_conn.describe_stacks(self.env + "-" + self.service_name)[0].outputs:
             key = convert(o.key)
             print(self.key_prefix + key, o.value)
@@ -31,7 +36,11 @@ class CurbdCf(object):
     def populate(self):
         if self.env == 'mock':
             path = "../curbd/mock-cf/" + self.service_name + ".json"
-            populate_json(self.consul_conn, path, self.key_prefix)
+            path_private = "../curbd-config-private/mock-cf/" + self.service_name + ".json"
+            try:
+                populate_json(self.consul_conn, path, self.key_prefix)
+            except FileNotFoundError:
+                populate_json(self.consul_conn, path_private, self.key_prefix)
         else:
             self.__populate()
 

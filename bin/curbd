@@ -20,7 +20,9 @@ def register_from_json(subparsers):
     parser = register_subparser(subparsers, 'from_json', populate)
     parser.add_argument('program',
                       help='The program type.')
-    parser.add_argument('config_name', help='The config name.')
+    parser.add_argument('-s', '--service', help='The service name.')
+    parser.add_argument('-e', '--environment',
+                            help='The environment name.')
 
 
 def register_from_cf(subparsers):

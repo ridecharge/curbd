@@ -5,13 +5,14 @@ import re
 class CurbdJson(object):
     def __init__(self, consul_conn, options):
         self.consul_conn = consul_conn
+        self.program = options.program
         try:
             self.config_name = options.service
+            self.key_prefix = self.program + "/" + self.config_name + "/"
         except AttributeError:
             self.config_name = options.environment
+            self.key_prefix = self.program + "/"
 
-        self.program = options.program
-        self.key_prefix = self.program + "/" + self.config_name + "/"
         self.path = "../curbd-config/" + self.program + "/" + self.config_name + ".json"
         self.path_private = "../curbd-config-private/" + self.program + "/" + self.config_name \
                             + ".json"

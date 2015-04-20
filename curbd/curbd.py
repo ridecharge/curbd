@@ -6,10 +6,10 @@ class CurbdJson(object):
     def __init__(self, consul_conn, options):
         self.consul_conn = consul_conn
         self.program = options.program
-        try:
+        if options.service:
             self.config_name = options.service
             self.key_prefix = self.program + "/" + self.config_name + "/"
-        except AttributeError:
+        else:
             self.config_name = options.environment
             self.key_prefix = self.program + "/"
 

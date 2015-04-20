@@ -4,6 +4,7 @@ import curbd
 
 
 def populate(options):
+
     curbd.new_curbd(options).populate()
 
 

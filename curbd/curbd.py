@@ -6,22 +6,22 @@ class CurbdJson(object):
     def __init__(self, consul_conn, options):
         self.consul_conn = consul_conn
         self.program = options.program
+
         if options.service:
             self.config_name = options.service
             self.key_prefix = self.program + "/" + self.config_name + "/"
-        else:
+        elif options.environment:
             self.config_name = options.environment
             self.key_prefix = self.program + "/"
+        else:
+            raise BaseException("service or environment must be supplied.")
 
         self.path = "../curbd-config/" + self.program + "/" + self.config_name + ".json"
         self.path_private = "../curbd-config-private/" + self.program + "/" + self.config_name \
                             + ".json"
 
     def populate(self):
-        try:
-            populate_json(self.consul_conn, self.path, self.key_prefix)
-        except FileNotFoundError:
-            populate_json(self.consul_conn, self.path_private, self.key_prefix)
+        try_populate_json(self.consul_conn, self.path, self.path_private, self.key_prefix)
 
 
 class CurbdCf(object):
@@ -42,12 +42,16 @@ class CurbdCf(object):
         if self.env == 'mock':
             path = "../curbd-config/mock-cf/" + self.service_name + ".json"
             path_private = "../curbd-config-private/mock-cf/" + self.service_name + ".json"
-            try:
-                populate_json(self.consul_conn, path, self.key_prefix)
-            except FileNotFoundError:
-                populate_json(self.consul_conn, path_private, self.key_prefix)
+            try_populate_json(self.consul_conn, path, path_private, self.key_prefix)
         else:
             self.__populate()
+
+
+def try_populate_json(consul_conn, path, path_private, key_prefix):
+    try:
+        populate_json(consul_conn, path, key_prefix)
+    except FileNotFoundError:
+        populate_json(consul_conn, path_private, key_prefix)
 
 
 def populate_json(consul_conn, path, key_prefix):

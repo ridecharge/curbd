@@ -5,11 +5,11 @@ import re
 class CurbdJson(object):
     def __init__(self, consul_conn, options):
         self.consul_conn = consul_conn
-        self.service_name = options.service_name
+        self.config_name = options.config_name
         self.program = options.program
-        self.key_prefix = self.program + "/" + self.service_name + "/"
-        self.path = "../curbd-config/" + self.program + "/" + self.service_name + ".json"
-        self.path_private = "../curbd-config-private/" + self.program + "/" + self.service_name \
+        self.key_prefix = self.program + "/" + self.config_name + "/"
+        self.path = "../curbd-config/" + self.program + "/" + self.config_name + ".json"
+        self.path_private = "../curbd-config-private/" + self.program + "/" + self.config_name \
                             + ".json"
 
     def populate(self):
@@ -35,7 +35,7 @@ class CurbdCf(object):
 
     def populate(self):
         if self.env == 'mock':
-            path = "../curbd/mock-cf/" + self.service_name + ".json"
+            path = "../curbd-config/mock-cf/" + self.service_name + ".json"
             path_private = "../curbd-config-private/mock-cf/" + self.service_name + ".json"
             try:
                 populate_json(self.consul_conn, path, self.key_prefix)

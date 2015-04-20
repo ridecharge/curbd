@@ -7,10 +7,10 @@ class CurbdJsonTest(TestCase):
     def setUp(self):
         self.consul_conn = MagicMock()
         self.options = MagicMock()
-        self.options.service_name = 'service'
+        self.options.config_name = 'service'
         self.options.program = 'prog'
-        self.key_prefix = self.options.program + "/" + self.options.service_name + "/"
-        self.path = "../curbd/" + self.options.program + "/" + self.options.service_name + ".json"
+        self.key_prefix = self.options.program + "/" + self.options.config_name + "/"
+        self.path = "../curbd-config/" + self.options.program + "/" + self.options.config_name + ".json"
         self.curbd = curbd.CurbdJson(self.consul_conn, self.options)
 
     @patch('curbd.curbd.populate_json')
@@ -36,7 +36,7 @@ class CurbdCfTest(TestCase):
         self.options.service_name = 'service'
         self.options.environment = 'mock'
         self.key_prefix = "cf/" + self.options.service_name + "/"
-        self.path = "../curbd/mock-cf/" + self.options.service_name + ".json"
+        self.path = "../curbd-config/mock-cf/" + self.options.service_name + ".json"
 
     @patch('curbd.curbd.populate_json')
     def test_populate_mock_env(self, populate_json):

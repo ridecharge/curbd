@@ -39,8 +39,8 @@ def register_from_cf(subparsers):
 
 def register_subparser(subparsers, name, func):
     parser = subparsers.add_parser(name)
-    parser.add_argument('-H', '--host', help='The consul host.')
-    parser.add_argument('-p', '--port', help='The consul port.')
+    parser.add_argument('-H', '--host', help='The consul host.', default='consul')
+    parser.add_argument('-p', '--port', help='The consul port.', default='8500')
     parser.set_defaults(func=func)
     return parser
 

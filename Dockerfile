@@ -6,5 +6,5 @@ RUN apt-get update && \
 RUN mkdir -p /opt/curbd
 WORKDIR /opt/curbd
 COPY . .
-RUN pip install -e .
+RUN pip3 install -e .
 ENTRYPOINT ["make", "nose"]

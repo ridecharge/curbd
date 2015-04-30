@@ -8,8 +8,8 @@ test:
 	docker run curbd-test
 
 nose:
-	nosetests --with-coverage --cover-inclusive --cover-package=cf
+	nosetests --with-coverage --cover-inclusive --cover-package=curbd
 
 clean:
-	docker rmi -f curbformation-test
+	docker rmi -f curbd-test
 	rm -r roles

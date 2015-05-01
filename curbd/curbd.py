@@ -46,7 +46,15 @@ class CurbdCf(object):
 
 def populate_json(consul_conn, path, key_prefix):
     with open(path) as f:
-        for k, v in json.load(f).items():
+        json_data = json.load(f)
+        __populate_json(consul_conn, json_data, key_prefix)
+
+
+def __populate_json(consul_conn, json_data, key_prefix):
+    for k, v in json_data.items():
+        if isinstance(v, dict):
+            __populate_json(consul_conn, v,  key_prefix + k + "/")
+        else:
             if isinstance(v, list):
                 v = "\n".join(v)
             print(key_prefix + k, v)

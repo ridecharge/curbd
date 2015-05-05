@@ -2,7 +2,7 @@ all: build test clean
 
 build:
 	ansible-galaxy install -r requirements.yml -f
-	docker build -t curbd-test .
+	docker build --pull -t curbd-test .
 
 test:
 	docker run curbd-test

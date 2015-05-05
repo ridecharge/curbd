@@ -3,15 +3,29 @@ import os
 
 
 class Curbd(object):
+    ENVIRONMENTS = ['stage', 'prod']
+
     def __init__(self, service, options):
         self.service = service
+        key_prefix = options.key_prefix.strip('/')
         self.path = os.path.normpath(
-            "../curbd-config/" + options.key_prefix + "/" + options.config +
+            "../curbd-config/" + key_prefix + "/" + options.config +
             ".json")
-        try:
-            self.key_prefix = options.key_prefix.split('/', 1)[1] + "/" + options.config + "/"
-        except IndexError:
-            self.key_prefix = options.key_prefix + "/" + options.config + "/"
+
+        split = key_prefix.split('/', 1)
+        if len(split) == 1:
+            prefix = key_prefix
+            postfix = options.config + "/"
+        else:
+            prefix = split[0]
+            postfix = split[1] + "/" + options.config + "/"
+
+        # Here we strip out the environment if its part of the prefix
+        # since each env will have a consul cluster we don't want it included.
+        if prefix in Curbd.ENVIRONMENTS:
+            self.key_prefix = postfix
+        else:
+            self.key_prefix = prefix + "/" + postfix
 
     def populate(self):
         self.service.populate_json(self.path, self.key_prefix)

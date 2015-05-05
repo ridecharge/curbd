@@ -22,7 +22,7 @@ class Curbd(object):
 
 
 class CurbdService():
-    def __init__(self, consul_conn, dry_run=False):
+    def __init__(self, consul_conn, dry_run=True):
         self.consul_conn = consul_conn
         self.dry_run = dry_run
 

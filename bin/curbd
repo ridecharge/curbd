@@ -1,68 +1,27 @@
 #!/usr/bin/env python
 import argparse
-import curbd
+from curbd import new_curbd
 
 
 def populate(options):
-
-    curbd.new_curbd(options).populate()
-
-
-def register_subparsers(parser):
-    subparsers = parser.add_subparsers(title='subcommands', description='stack subcommands',
-                                       help='subcommands')
-    subparsers.required = True
-    subparsers.dest = 'subcommand'
-    register_from_json(subparsers)
-    register_from_cf(subparsers)
+    new_curbd(options).populate()
 
 
-def register_from_json(subparsers):
-    parser = register_subparser(subparsers, 'from_json', populate)
-    parser.add_argument('program',
-                      help='The program type.')
-    parser.add_argument('-s', '--service', help='The service name.')
-    parser.add_argument('-e', '--environment',
-                            help='The environment name.')
-
-
-def register_from_cf(subparsers):
-    parser = register_subparser(subparsers, 'from_cf', populate)
-    parser.add_argument('-e', '--environment',
-                            help='The environment name.',
-                            default='mock')
-    parser.add_argument('-r', '--region', help='The AWS Region to describe stacks from.',
-                        choices=['us-east-1', 'us-west-1'], default='us-east-1')
-    parser.add_argument('service_name', help='The service name.')
-
-
-
-def register_subparser(subparsers, name, func):
-    parser = subparsers.add_parser(name)
-    parser.add_argument('-H', '--host', help='The consul host.', default='consul')
-    parser.add_argument('-p', '--port', help='The consul port.', default='8500')
-    parser.set_defaults(func=func)
-    return parser
-
-
-def get_parser():
+def new_parser():
     parser = argparse.ArgumentParser(
         description='Performs operations for Curbd.',
         prog='curbd')
+    parser.add_argument('-H', '--host', help='The consul host.', default='consul')
+    parser.add_argument('-p', '--port', help='The consul port.', default='8500')
+    parser.add_argument('key_prefix', help='Key prefix/folder path.')
+    parser.add_argument('config', help='The config file name.')
+    parser.set_defaults(func=populate)
     return parser
 
 
-def args_error(message, parser):
-    parser.print_help()
-    print(message)
-    exit(1)
-
-
 def main():
-    parser = get_parser()
-    register_subparsers(parser)
+    parser = new_parser()
     args = parser.parse_args()
-
     args.func(args)
 
 

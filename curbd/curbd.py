@@ -14,6 +14,8 @@ class Curbd(object):
 
         if options.key_prefix in Curbd.ENVIRONMENTS:
             self.key_prefix = options.config + "/"
+        elif options.config in Curbd.ENVIRONMENTS:
+            self.key_prefix = options.key_prefix + "/"
         else:
             self.key_prefix = options.key_prefix + "/" + options.config + "/"
 

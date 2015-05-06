@@ -8,10 +8,11 @@ class CurbdTest(TestCase):
         self.consul_conn = MagicMock()
         self.options = MagicMock()
         self.options.config = 'config'
-        self.options.key_prefix = 'key_prefix'
-        self.key_prefix = self.options.key_prefix + "/" + self.options.config + "/"
-        self.path = "../curbd-config/" + self.options.key_prefix + "/" \
-                    + self.options.config + ".json"
+        self.options.environment = 'stage'
+        self.options.program = 'program'
+        self.key_prefix = self.options.program + "/" + self.options.config + "/"
+        self.path = "../curbd-config/" + self.options.environment + "/" + self.options.program \
+                    + "/" + self.options.config + ".json"
         self.service = MagicMock()
         self.curbd = curbd.Curbd(self.service, self.options)
 
@@ -34,5 +35,5 @@ class CurbdServiceTest(TestCase):
 
     @patch('builtins.open', mock_open(read_data="{\"hello\":\"world\"}"))
     def test_populate_json(self):
-        self.service.populate_json('path/', 'key_prefix/')
-        self.consul_conn.kv.put.assert_called_with('key_prefix/hello', 'world')
+        self.service.populate_json('path/', 'program/')
+        self.consul_conn.kv.put.assert_called_with('program/hello', 'world')

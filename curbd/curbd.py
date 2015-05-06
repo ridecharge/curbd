@@ -3,21 +3,12 @@ import os
 
 
 class Curbd(object):
-    ENVIRONMENTS = ['stage', 'prod']
-
     def __init__(self, service, options):
         self.service = service
-
+        self.key_prefix = options.program + "/" + options.config + "/"
         self.path = os.path.normpath(
-            "../curbd-config/" + options.key_prefix + "/" + options.config +
-            ".json")
-
-        if options.key_prefix in Curbd.ENVIRONMENTS:
-            self.key_prefix = options.config + "/"
-        elif options.config in Curbd.ENVIRONMENTS:
-            self.key_prefix = options.key_prefix + "/"
-        else:
-            self.key_prefix = options.key_prefix + "/" + options.config + "/"
+            "../curbd-config/" + options.environment + "/" + options.program + "/"
+            + options.config + ".json")
 
     def populate(self):
         self.service.populate_json(self.path, self.key_prefix)

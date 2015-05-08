@@ -16,3 +16,5 @@ and will populate keys in consul like
 which then can be retrived by applications to obtain their configuration.
 
 By default its intended to run in a docker container linked against the consul service with address ```consul:8500``` but this can be overriden by the ```--host and --port``` flags.
+
+See [curb-config](https://github.com/ridecharge/curbd-config) for config files.

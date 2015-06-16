@@ -1,10 +1,22 @@
 #!/usr/bin/env python
 import argparse
+import os
 from curbd import new_curbd
 
 
 def populate(options):
-    new_curbd(options).populate()
+    if not options.program or not options.config:
+        for root, dir, files in os.walk(options.environment):
+            if not files:
+                continue
+            program = root.split('/')[-1]
+            for file in files:
+                config = file.split('.')[0]
+                options.program = program
+                options.config = config
+                new_curbd(options).populate()
+    else:
+        new_curbd(options).populate()
 
 
 def new_parser():
@@ -12,10 +24,10 @@ def new_parser():
         description='Performs operations for Curbd.',
         prog='curbd')
     parser.add_argument('-H', '--host', help='The consul host.', default='consul')
-    parser.add_argument('-p', '--port', help='The consul port.', default='8500')
+    parser.add_argument('-P', '--port', help='The consul port.', default='8500')
     parser.add_argument('-e', '--environment', help='The consul port.', default='stage')
-    parser.add_argument('program', help='The program to config.')
-    parser.add_argument('config', help='The config file name.')
+    parser.add_argument('-p', '--program', help='The program to config.', default=None)
+    parser.add_argument('-c', '--config', help='The config file name.', default=None)
     parser.set_defaults(func=populate)
     return parser
 
